@@ -36,11 +36,29 @@ const Festivals = () => {
     festivalAPI.getAll({ limit: 50 })
       .then(({ data }) => {
         const list = data.festivals || []
-        setFestivals(list.map(normalise))
+        // If DB is empty fall back to local data
+        setFestivals(list.length ? list.map(normalise) : localFestivals.map(f => ({
+          id: f.id,
+          name: f.name,
+          region: f.region,
+          description: f.description,
+          color: f.color,
+          image: f.image || null,
+          images: f.image ? [f.image] : [],
+        })))
       })
-      .catch((error) => {
-        console.error(error)
-        setFestivals([])
+      .catch(() => {
+        // API unreachable — show local data so page is never blank
+        setFestivals(localFestivals.map(f => ({
+          id: f.id,
+          name: f.name,
+          region: f.region,
+          description: f.description,
+          color: f.color,
+          image: f.image || null,
+          images: f.image ? [f.image] : [],
+        })))
+        setError('')
       })
       .finally(() => setLoading(false))
   }, [])

@@ -148,7 +148,7 @@ const Traditions = () => {
       featured: false,
       date: c.createdAt,
     }))
-    return apiItems
+    return [...apiItems, ...sampleTraditions]
   }, [apiContributions])
 
   const filtered = useMemo(() => {
